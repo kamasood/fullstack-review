@@ -10,7 +10,29 @@ class App extends React.Component {
     this.state = {
       repos: []
     }
+    this.getTopRepos = this.getTopRepos.bind(this);
+  }
 
+  componentDidMount() {
+    this.getTopRepos((data) => {
+      this.setState({
+        repos: data
+      })
+    })
+  }
+
+  getTopRepos (callback) {
+    $.ajax({
+      url: '/repos',
+      type: 'GET',
+      contentType: 'application/json',
+      success: function(response) {
+        callback(response);
+      },
+      error: function(error) {
+        console.log(error);
+      }
+    });
   }
 
   search (term) {
@@ -19,9 +41,12 @@ class App extends React.Component {
       url: '/repos',
       type: 'POST',
       contentType: 'application/json',
-      data: {term},
+      data: `{"query":"${term}"}`,
       success: function(response) {
-        console.log('Success!', response);
+        console.log(response);
+      },
+      error: function(error) {
+        console.log(error);
       }
     });
 
@@ -31,8 +56,8 @@ class App extends React.Component {
   render () {
     return (<div>
       <h1>Github Fetcher</h1>
-      <RepoList repos={this.state.repos}/>
       <Search onSearch={this.search.bind(this)}/>
+      <RepoList repos={this.state.repos}/>
     </div>)
   }
 }
