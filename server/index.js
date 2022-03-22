@@ -1,9 +1,15 @@
 const express = require('express');
+const helpers = require('../helpers/github.js');
 let app = express();
 
+app.use(express.json());
 app.use(express.static(__dirname + '/../client/dist'));
 
 app.post('/repos', function (req, res) {
+  console.log('POST request received');
+  console.log('term search:', req.body.query);
+  helpers.getReposByUsername(req.body.query);
+  res.sendStatus(200);
   // TODO - your code here!
   // This route should take the github username provided
   // and get the repo information from the github API, then
