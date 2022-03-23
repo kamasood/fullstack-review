@@ -8,26 +8,23 @@ app.use(express.json());
 app.use(express.static(__dirname + '/../client/dist'));
 
 app.post('/repos', function (req, res) {
-
   helpers.getReposByUsername(req.body.query)
     .then((response) => {
       db.save(response.data);
     })
     .catch(err => {
       console.log(err);
-    });
-
-  res.sendStatus(201);
+    })
+    .then(() => {
+      res.sendStatus(201);
+    })
 });
 
 app.get('/repos', function (req, res) {
   return db.find()
     .then((repos) => {
-      console.log(repos);
       res.send(repos);
     });
-
-  res.sendStatus(200);
 });
 
 let port = 1128;

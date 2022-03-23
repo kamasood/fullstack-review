@@ -2,7 +2,8 @@ import React from 'react';
 
 const RepoListEntry = ({repo}) => (
   <div>
-    {repo.name}
+    <a href={repo.url}>{repo.name}</a>
+    <span>  ---  {repo.owner}  ---  stars: {repo.stargazers}</span>
   </div>
 );
 

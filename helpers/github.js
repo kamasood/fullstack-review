@@ -15,7 +15,7 @@ const getReposByUsername = (username) => {
     }
   };
 
-  return axios(options) // returns a promise
+  return axios(options)
 }
 
 module.exports.getReposByUsername = getReposByUsername;

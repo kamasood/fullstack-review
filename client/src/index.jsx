@@ -36,19 +36,32 @@ class App extends React.Component {
   }
 
   search (term) {
-    // AJAX post the search term
-    $.ajax({
+
+    return new Promise((resolve, reject) => (
+      $.ajax({
       url: '/repos',
       type: 'POST',
       contentType: 'application/json',
       data: `{"query":"${term}"}`,
       success: function(response) {
-        console.log(response);
+        console.log('succesfully added github user to database');
+        resolve();
       },
       error: function(error) {
-        console.log(error);
+        reject(error);
       }
-    });
+      })
+    ))
+      .then(() => {
+        this.getTopRepos((data) => {
+          this.setState({
+            repos: data
+          })
+        })}
+      )
+      .catch((error) => {
+        console.log(error);
+      });
 
     console.log(`${term} was searched`);
   }

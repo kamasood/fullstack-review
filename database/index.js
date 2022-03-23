@@ -5,20 +5,19 @@ let repoSchema = mongoose.Schema({
   id: Number,
   name: String,
   owner: String,
-  // url: String,
-  // description: String,
-  // created: Date,
-  // updated: Date,
+  url: String,
   stargazers: Number
-  // forks: Number
 });
 
 let Repo = mongoose.model('Repo', repoSchema);
 
 let save = (repos) => {
 
+  // dropCollection(); // nothing to see here...
+
   const options = {
-    upsert: true // if none found, create a new document
+    upsert: true, // if none found, create a new document
+    useFindAndModify: false
   };
 
   repos.forEach((repo) => {
@@ -28,24 +27,30 @@ let save = (repos) => {
         id: repo.id,
         name: repo.name,
         owner: repo.owner.login,
+        url: repo.html_url,
         stargazers: repo.stargazers_count
       },
-      options)
-      .then((document) => {
-        (console.log(document))
-      })
-      .catch(err => console.log(err));
+      options,
+      (err) => {
+        if (err) {
+          console.log(err);
+        }
+      }
+    );
   });
-
 };
 
 let find = () => {
-
   return Repo.find({})
     .sort({ stargazers: 'desc'})
-    .limit(25);
-
+    .limit(25)
+    .catch(err => console.log(err));
 };
+
+// just my little helper
+let dropCollection = () => {
+  Repo.collection.drop();
+}
 
 module.exports.save = save;
 module.exports.find = find;
